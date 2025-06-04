@@ -1,87 +1,45 @@
 package horas.crazytrips.model;
 
+import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
+
 import java.time.LocalDate;
 
+@Entity
+@Table(name = "viagem")
+@Inheritance(strategy = InheritanceType.SINGLE_TABLE) // Changed from JOINED to SINGLE_TABLE
+@DiscriminatorColumn(name = "tipo")
+@Getter
+@Setter
 public abstract class Viagem {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
+
     private String origem;
     private String destino;
     private double preco;
+
+    @Column(name = "data_partida")
     private LocalDate dataPartida;
+
+    @Column(name = "data_retorno")
     private LocalDate dataRetorno;
+
+    @ManyToOne
+    @JoinColumn(name = "cliente_id")
     private Cliente cliente;
+
+    @Column(name = "tipo", insertable = false, updatable = false)
     private String tipo;
-    private String transporte;
 
-    public int getId() {
-        return id;
-    }
+    @Column(name = "primeira_classe")
+    private boolean primeiraClasse;
 
-    public void setId(int id) {
-        this.id = id;
-    }
+    @Column(name = "assento_janela")
+    private boolean assentoJanela;
 
-    public String getOrigem() {
-        return origem;
-    }
-
-    public void setOrigem(String origem) {
-        this.origem = origem;
-    }
-
-    public String getDestino() {
-        return destino;
-    }
-
-    public void setDestino(String destino) {
-        this.destino = destino;
-    }
-
-    public double getPreco() {
-        return preco;
-    }
-
-    public void setPreco(double preco) {
-        this.preco = preco;
-    }
-
-    public LocalDate getDataPartida() {
-        return dataPartida;
-    }
-
-    public void setDataPartida(LocalDate dataPartida) {
-        this.dataPartida = dataPartida;
-    }
-
-    public LocalDate getDataRetorno() {
-        return dataRetorno;
-    }
-
-    public void setDataRetorno(LocalDate dataRetorno) {
-        this.dataRetorno = dataRetorno;
-    }
-
-    public Cliente getCliente() {
-        return cliente;
-    }
-
-    public void setCliente(Cliente cliente) {
-        this.cliente = cliente;
-    }
-
-    public String getTipo() {
-        return tipo;
-    }
-
-    public void setTipo(String tipo) {
-        this.tipo = tipo;
-    }
-
-    public String getTransporte() {
-        return transporte;
-    }
-
-    public void setTransporte(String transporte) {
-        this.transporte = transporte;
-    }
+    @Column(name = "guia_turistico")
+    private boolean guiaTuristico;
 }
