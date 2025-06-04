@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Listar Viagens - Crazy Trips</title>
+    <link rel="stylesheet" href="/css/styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Impact&display=swap" rel="stylesheet">
+    <style>
+        .container {
+            width: 90%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            background-color: #fff;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        th, td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        th {
+            background-color: #3b0066;
+            color: white;
+            font-weight: bold;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+
+        tr:hover {
+            background-color: #f1f1f1;
+        }
+
+        .actions {
+            margin-top: 20px;
+            display: flex;
+            gap: 10px;
+        }
+
+        .actions button {
+            padding: 10px 15px;
+            border: none;
+            background-color: #3b0066;
+            color: white;
+            cursor: pointer;
+            border-radius: 4px;
+        }
+
+        .actions button:hover {
+            background-color: #2a004d;
+        }
+
+        .empty-message {
+            text-align: center;
+            margin: 40px 0;
+            color: #555;
+            font-style: italic;
+        }
+    </style>
+</head>
+<body>
+<header>
+    <h1>CRAZY TRIPS</h1>
+    <h2>Lista de Viagens</h2>
+</header>
+
+<main class="container">
+    <div th:if="${viagens.empty}" class="empty-message">
+        <p>Nenhuma viagem cadastrada.</p>
+    </div>
+
+    <table th:unless="${viagens.empty}">
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>Tipo</th>
+            <th>Origem</th>
+            <th>Destino</th>
+            <th>Preço</th>
+            <th>Data Partida</th>
+            <th>Data Retorno</th>
+            <th>Cliente</th>
+            <th>Ações</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="viagem : ${viagens}">
+            <td th:text="${viagem.id}">1</td>
+            <td th:text="${viagem.tipo}">Nacional</td>
+            <td th:text="${viagem.origem}">São Paulo</td>
+            <td th:text="${viagem.destino}">Rio de Janeiro</td>
+            <td th:text="'R$ ' + ${#numbers.formatDecimal(viagem.preco, 1, 2)}">R$ 250.00</td>
+            <td th:text="${#temporals.format(viagem.dataPartida, 'dd/MM/yyyy')}">01/01/2025</td>
+            <td th:text="${#temporals.format(viagem.dataRetorno, 'dd/MM/yyyy')}">10/01/2025</td>
+            <td th:text="${viagem.cliente != null ? viagem.cliente.nome : 'Não associado'}">Nome do Cliente</td>
+            <td>
+                <a th:href="@{'/viagem/' + ${viagem.id}}">Detalhes</a>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+
+    <div class="actions">
+        <button onclick="window.location.href='/'">Voltar para Página Inicial</button>
+        <button onclick="window.location.href='/viagem/cadastrar'">Cadastrar Nova Viagem</button>
+    </div>
+</main>
+</body>
+</html>
