@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Editar Cliente - Crazy Trips</title>
+  <link rel="stylesheet" href="/css/styles.css">
+  <link rel="stylesheet" href="/css/slide.css">
+  <script src="/js/slideshow.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Impact&display=swap" rel="stylesheet">
+  <style>
+    .container {
+      width: 90%;
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+
+    form {
+      background-color: #fff;
+      border-radius: 8px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+      padding: 25px;
+      margin-bottom: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+    }
+
+    input[type="text"], input[type="date"] {
+      padding: 8px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      width: 100%;
+    }
+
+    .actions {
+      margin-top: 20px;
+      display: flex;
+      gap: 10px;
+    }
+
+    .btn {
+      padding: 10px 15px;
+      border: none;
+      background-color: #3b0066;
+      color: white;
+      cursor: pointer;
+      border-radius: 4px;
+      text-decoration: none;
+      display: inline-block;
+    }
+
+    .btn:hover {
+      background-color: #2a004d;
+    }
+
+    .btn-secondary {
+      background-color: #666;
+    }
+
+    .btn-secondary:hover {
+      background-color: #555;
+    }
+
+  </style>
+</head>
+<body>
+<header>
+  <h1>CRAZY TRIPS</h1>
+  <h2>Editar Cliente</h2>
+</header>
+
+<div class="slideshow-container">
+  <div class="slide slide2"></div>
+  <div class="slide slide3"></div>
+  <div class="slide slide4"></div>
+  <div class="slide slide5"></div>
+  <div class="slide slide6"></div>
+  <div class="slide slide7"></div>
+</div>
+
+<main class="container">
+  <form th:if="${cliente != null}" th:action="@{'/cliente/atualizar/' + ${cliente.id}}" method="post">
+    <div>
+      <label>Nome:</label>
+      <input type="text" name="nome" th:value="${cliente.nome}" required>
+    </div>
+
+    <div>
+      <label>CPF:</label>
+      <input type="text" name="cpf" th:value="${cliente.cpf}" required>
+    </div>
+
+    <div>
+      <label>Data de Nascimento:</label>
+      <input type="date" name="dataNascimento" th:value="${cliente.dataNascimento}" required>
+    </div>
+
+    <div>
+      <label>Telefone:</label>
+      <input type="text" name="telefone" th:value="${cliente.telefone}">
+    </div>
+
+    <div>
+      <label>CEP:</label>
+      <input type="text" name="cep" th:value="${cliente.cep}">
+    </div>
+
+    <div class="actions">
+      <button type="submit" class="btn">Salvar Alterações</button>
+      <a th:href="@{'/cliente/' + ${cliente.id}}" class="btn btn-secondary">Cancelar</a>
+    </div>
+  </form>
+
+  <div th:if="${cliente == null}" class="not-found">
+    <h3>Cliente não encontrado</h3>
+    <p>O cliente que você tentou editar não existe ou foi removido.</p>
+    <div class="actions">
+      <a href="/cliente/listar" class="btn">Ver Todos os Clientes</a>
+      <a href="/" class="btn btn-secondary">Voltar para Página Inicial</a>
+    </div>
+  </div>
+</main>
+</body>
+</html>

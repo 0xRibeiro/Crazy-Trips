@@ -5,8 +5,8 @@ import horas.crazytrips.model.Viagem;
 import horas.crazytrips.service.ClienteService;
 import horas.crazytrips.service.ViagemService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 import java.time.LocalDate;
@@ -35,62 +35,38 @@ public class ViagemController {
             @RequestParam("clienteId") Integer clienteId,
             @RequestParam(value = "tipo", required = false) String[] tipos) {
 
-        boolean primeiraClasse = false;
-        boolean assentoJanela = false;
-        boolean guiaTuristico = false;
-
-        if (tipos != null) {
-            for (String tipo : tipos) {
-                if ("primeira_classe".equals(tipo)) primeiraClasse = true;
-                if ("assento_janela".equals(tipo)) assentoJanela = true;
-                if ("guia_turistico".equals(tipo)) guiaTuristico = true;
-            }
-        }
-
-        Viagem viagem = viagemService.criarNovaViagem(
+        viagemService.criarNovaViagem(
                 tipoViagem, origem, destino, preco,
-                dataPartida, dataChegada, null, clienteId
+                dataPartida, dataChegada, tipos, clienteId
         );
-
-        viagem.setPrimeiraClasse(primeiraClasse);
-        viagem.setAssentoJanela(assentoJanela);
-        viagem.setGuiaTuristico(guiaTuristico);
-
-        viagemService.save(viagem);
 
         return "redirect:/viagem/listar";
     }
 
     @GetMapping("/viagem/listar")
     public ModelAndView listarViagens() {
-        List<Viagem> viagens = viagemService.findAll();
         ModelAndView modelAndView = new ModelAndView("listar-viagens");
-        modelAndView.addObject("viagens", viagens);
+        modelAndView.addObject("viagens", viagemService.findAll());
         return modelAndView;
     }
 
     @GetMapping("/viagem/{id}")
     public ModelAndView mostrarViagem(@PathVariable Integer id) {
         try {
-            Viagem viagem = viagemService.findById(id);
             ModelAndView modelAndView = new ModelAndView("viagem-detalhe");
-            modelAndView.addObject("viagem", viagem);
+            modelAndView.addObject("viagem", viagemService.findById(id));
             return modelAndView;
         } catch (Exception e) {
-            ModelAndView modelAndView = new ModelAndView("redirect:/");
-            return modelAndView;
+            return new ModelAndView("redirect:/");
         }
     }
 
     @GetMapping("/viagem/editar/{id}")
     public ModelAndView editarViagem(@PathVariable Integer id) {
         try {
-            Viagem viagem = viagemService.findById(id);
-            List<Cliente> clientes = clienteService.findAll();
-
             ModelAndView modelAndView = new ModelAndView("viagem-editar");
-            modelAndView.addObject("viagem", viagem);
-            modelAndView.addObject("clientes", clientes);
+            modelAndView.addObject("viagem", viagemService.findById(id));
+            modelAndView.addObject("clientes", clienteService.findAll());
             return modelAndView;
         } catch (Exception e) {
             return new ModelAndView("redirect:/viagem/listar");
@@ -100,6 +76,7 @@ public class ViagemController {
     @PostMapping("/viagem/atualizar/{id}")
     public String atualizarViagem(
             @PathVariable Integer id,
+            @RequestParam("tipoViagem") String tipoViagem,
             @RequestParam("origem") String origem,
             @RequestParam("destino") String destino,
             @RequestParam("preco") double preco,
@@ -109,33 +86,21 @@ public class ViagemController {
             @RequestParam(value = "tipo", required = false) String[] tipos) {
 
         try {
-            Viagem viagem = viagemService.findById(id);
-            viagem.setOrigem(origem);
-            viagem.setDestino(destino);
-            viagem.setPreco(preco);
-            viagem.setDataPartida(dataPartida);
-            viagem.setDataRetorno(dataRetorno);
-
-
-            viagem.setPrimeiraClasse(false);
-            viagem.setAssentoJanela(false);
-            viagem.setGuiaTuristico(false);
-
-
-            if (tipos != null) {
-                for (String tipo : tipos) {
-                    if ("primeira_classe".equals(tipo)) viagem.setPrimeiraClasse(true);
-                    if ("assento_janela".equals(tipo)) viagem.setAssentoJanela(true);
-                    if ("guia_turistico".equals(tipo)) viagem.setGuiaTuristico(true);
-                }
-            }
-
-            Cliente cliente = clienteService.findById(clienteId);
-            viagem.setCliente(cliente);
-
-            viagemService.atualizarViagem(id, viagem);
-
+            viagemService.atualizarViagem(
+                    id, tipoViagem, origem, destino, preco,
+                    dataPartida, dataRetorno, tipos, clienteId
+            );
             return "redirect:/viagem/" + id;
+        } catch (Exception e) {
+            return "redirect:/viagem/listar";
+        }
+    }
+
+    @PostMapping("/viagem/deletar/{id}")
+    public String deletarViagem(@PathVariable Integer id) {
+        try {
+            viagemService.deleteById(id);
+            return "redirect:/viagem/listar";
         } catch (Exception e) {
             return "redirect:/viagem/listar";
         }

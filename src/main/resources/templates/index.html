@@ -5,6 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Crazy Trips</title>
     <link rel="stylesheet" href="/css/styles.css">
+    <link rel="stylesheet" href="/css/slide.css">
+    <script src="/js/slideshow.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Impact&display=swap" rel="stylesheet">
     <style>
         .box form {
@@ -146,6 +148,29 @@
             initPriceField();
             loadClientes();
         };
+
+        function desfazerUltimoCadastro() {
+            fetch('/desfazer-ultimo-cadastro', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            })
+                .then(response => {
+                    if (!response.ok) {
+                        return response.text().then(text => { throw new Error(text) });
+                    }
+                    return response.text();
+                })
+                .then(message => {
+                    alert(message);
+                    // Refresh the client list or page as needed
+                    window.location.reload();
+                })
+                .catch(error => {
+                    alert('Erro: ' + error.message);
+                });
+        }
     </script>
 </head>
 <body>
@@ -176,6 +201,7 @@
                 <div class="botoes client-buttons">
                     <button type="button" onclick="window.location.href='/cliente/listar'">Listar Todos</button>
                     <button type="button" onclick="buscarCliente()">Buscar por ID</button>
+                    <button type="button" onclick="desfazerUltimoCadastro()">Desfazer Último Cadastro</button>
                 </div>
             </form>
         </div>

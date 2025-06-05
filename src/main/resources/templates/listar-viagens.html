@@ -5,6 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Listar Viagens - Crazy Trips</title>
     <link rel="stylesheet" href="/css/styles.css">
+    <link rel="stylesheet" href="/css/slide.css">
+    <script src="/js/slideshow.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Impact&display=swap" rel="stylesheet">
     <style>
         .container {
@@ -67,6 +69,24 @@
             color: #555;
             font-style: italic;
         }
+
+        .action-buttons a, .action-buttons button {
+            margin-right: 8px;
+            text-decoration: underline;
+        }
+
+        .action-buttons button {
+            background: none;
+            border: none;
+            color: #d9534f;
+            cursor: pointer;
+            padding: 0;
+        }
+
+        .action-buttons button:hover {
+            color: #c9302c;
+        }
+
     </style>
 </head>
 <body>
@@ -74,6 +94,15 @@
     <h1>CRAZY TRIPS</h1>
     <h2>Lista de Viagens</h2>
 </header>
+
+<div class="slideshow-container">
+    <div class="slide slide2"></div>
+    <div class="slide slide3"></div>
+    <div class="slide slide4"></div>
+    <div class="slide slide5"></div>
+    <div class="slide slide6"></div>
+    <div class="slide slide7"></div>
+</div>
 
 <main class="container">
     <div th:if="${viagens.empty}" class="empty-message">
@@ -106,6 +135,12 @@
             <td th:text="${viagem.cliente != null ? viagem.cliente.nome : 'Não associado'}">Nome do Cliente</td>
             <td>
                 <a th:href="@{'/viagem/' + ${viagem.id}}">Detalhes</a>
+                <form th:action="@{'/viagem/deletar/' + ${viagem.id}}" method="post" style="display:inline;">
+                    <button type="submit" onclick="return confirm('Tem certeza que deseja excluir esta viagem?');"
+                            style="background: none; border: none; color: #d9534f; text-decoration: underline; cursor: pointer;">
+                        Excluir
+                    </button>
+                </form>
             </td>
         </tr>
         </tbody>
