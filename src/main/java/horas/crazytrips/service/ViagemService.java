@@ -21,7 +21,6 @@ public class ViagemService {
         this.clienteRepository = clienteRepository;
     }
 
-    // Basic CRUD operations
     public List<Viagem> findAll() {
         return viagemRepository.findAll();
     }
@@ -31,20 +30,18 @@ public class ViagemService {
                 .orElseThrow(() -> new RuntimeException("Viagem não encontrada com id: " + id));
     }
 
-    public Viagem save(Viagem viagem) {
-        return viagemRepository.save(viagem);
+    public void save(Viagem viagem) {
+        viagemRepository.save(viagem);
     }
 
     public void deleteById(Integer id) {
         viagemRepository.deleteById(id);
     }
 
-    // Business logic methods
     public Viagem criarNovaViagem(String tipo, String origem, String destino, double preco,
                                   LocalDate dataPartida, LocalDate dataRetorno,
                                   String transporte, Integer clienteId) {
 
-        // Use factory to create appropriate Viagem subtype
         Viagem viagem = ViagemFactory.criarViagem(tipo);
         viagem.setOrigem(origem);
         viagem.setDestino(destino);
@@ -52,7 +49,6 @@ public class ViagemService {
         viagem.setDataPartida(dataPartida);
         viagem.setDataRetorno(dataRetorno);
 
-        // Associate with cliente if ID provided
         if (clienteId != null) {
             Cliente cliente = clienteRepository.findById(clienteId)
                     .orElseThrow(() -> new RuntimeException("Cliente não encontrado com id: " + clienteId));
@@ -62,17 +58,15 @@ public class ViagemService {
         return viagemRepository.save(viagem);
     }
 
-    // Method to update an existing trip
-    public Viagem atualizarViagem(Integer id, Viagem viagemAtualizada) {
+    public void atualizarViagem(Integer id, Viagem viagemAtualizada) {
         Viagem viagemExistente = findById(id);
 
-        // Update base properties
         viagemExistente.setOrigem(viagemAtualizada.getOrigem());
         viagemExistente.setDestino(viagemAtualizada.getDestino());
         viagemExistente.setPreco(viagemAtualizada.getPreco());
         viagemExistente.setDataPartida(viagemAtualizada.getDataPartida());
         viagemExistente.setDataRetorno(viagemAtualizada.getDataRetorno());
 
-        return viagemRepository.save(viagemExistente);
+        viagemRepository.save(viagemExistente);
     }
 }

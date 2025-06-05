@@ -19,7 +19,6 @@ public class ClienteService {
         this.clienteRepository = clienteRepository;
     }
 
-    // Basic CRUD operations
     public List<Cliente> findAll() {
         return clienteRepository.findAll();
     }
@@ -37,7 +36,6 @@ public class ClienteService {
         clienteRepository.deleteById(id);
     }
 
-    // Business logic method using builder pattern
     public Cliente criarNovoCliente(String nome, String cpf, LocalDate dataNascimento,
                                     String telefone, String cep) {
         Cliente cliente = new ClienteBuilder()
@@ -51,7 +49,6 @@ public class ClienteService {
         return clienteRepository.save(cliente);
     }
 
-    // Method to update an existing client
     public Cliente atualizarCliente(Integer id, Cliente clienteAtualizado) {
         Cliente clienteExistente = findById(id);
 
